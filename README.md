@@ -1,2 +1,2 @@
 # mcu680
-Module GY-MCU680V1 on NodeMCU
+GY-MCU680 module for NodeMCU
