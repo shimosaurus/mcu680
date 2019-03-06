@@ -4,7 +4,7 @@
 -- @shimosaurus, 1 Mar 2019
 --------------------------------------------------------------------------------
 --Use:
---require("mcu680"):init(1, 2)
+--require("mcu680"):init(Tx_pin, Rx_pin)
 --require("mcu680"):read(function(temperature, humidity, pressure, iaq_accuracy, iaq, gas_resistance, altitude)
 --    print(string.format("Temperature: %g C", temperature/100))
 --    print(string.format("Humidity: %g %%", humidity/100))
@@ -18,7 +18,7 @@
 local modname = ...
 
 -- Used modules and functions
-local string, print, softuart, struct, bit = 
+local string, print, softuart, struct, bit =
       string, print, softuart, struct, bit
 -- Local functions
 local node_task_post, node_task_LOW_PRIORITY = node.task.post, node.task.LOW_PRIORITY
@@ -29,7 +29,7 @@ local bit_band, bit_rshift = bit.band, bit.rshift
 
 string, softuart, struct, bit = nil
 
-local cb, tx, rx, suart
+local cb, suart
 
 local function _chsum(data)
     local sum = 0
@@ -43,12 +43,12 @@ local function init(self, tx, rx)
 
     suart = softuart_setup(9600, tx, rx)
     --config commands. don't know if needed:
-    suart:write(string_char(0xA5,0x55,0x3F,0x39))
-    suart:write(string_char(0xA5,0x56,0x02,0xFD))
-    
+    suart:write(string_char(0xA5, 0x55, 0x3F, 0x39))
+    suart:write(string_char(0xA5, 0x56, 0x02, 0xFD))
+
     local data = ""
     suart:on("data", 20, function(d)
-        data = data .. d       
+        data = data .. d
         local i = 0
         while i <= #data do
             i = i + 1
@@ -62,7 +62,7 @@ local function init(self, tx, rx)
                     local pressure = struct_unpack(">i3", data:sub(9,11))
                     local iaq_accuracy = bit_rshift(bit_band(data:byte(12), 0xF0), 4)
                     local iaq = struct_unpack(">h", string_char(bit_band(data:byte(12), 0x0F), data:byte(13)))
-                    local gas_resistance = struct_unpack(">L", data:sub(14,17))                
+                    local gas_resistance = struct_unpack(">L", data:sub(14,17))
                     local altitude = struct_unpack(">h", data:sub(18,19))
                     data = data:sub(21)
                     i = 0
@@ -80,10 +80,9 @@ local function read(self, lcb)
     cb = lcb
 end
 
- -- Set module name as parameter of require and return module table
+-- Set module name as parameter of require and return module table
 local M = {
     read = read, init = init
 }
 _G[modname or 'mcu680'] = M
 return M
-
