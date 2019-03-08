@@ -1,5 +1,5 @@
 --------------------------------------------------------------------------------
--- GY-MCU680 module for NodeMCU
+-- GY-MCU680V1 module for NodeMCU
 -- LICENCE: http://opensource.org/licenses/MIT
 -- @shimosaurus, 1 Mar 2019
 --------------------------------------------------------------------------------
