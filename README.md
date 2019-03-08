@@ -3,10 +3,11 @@
 | :----- | :-------------------- | :---------- | :------ |
 | 2019-03-01 | [Jan Simsa](https://github.com/shimosaurus) | [Jan Simsa](https://github.com/shimosaurus) | [mcu680.lua](https://github.com/shimosaurus/mcu680/blob/master/mcu680.lua) |
 
-This Lua code for NodeMCU provides access to module GY-MCU680V1. The module have sensor [BME680](https://www.bosch-sensortec.com/bst/products/all_products/bme680) and MCU STM32 obtain temperature, humidity, atmospheric pressure, IAQ (indoor air quality) and resistance value. Data read is through serial port. 
+This Lua code for NodeMCU provides access to module GY-MCU680V1 with sensor [BME680](https://www.bosch-sensortec.com/bst/products/all_products/bme680) and MCU STM32 obtain temperature, humidity, atmospheric pressure, IAQ (indoor air quality) and resistance value. Data read is through serial port.
 
 !!! note
-    The module requires `softuart`, `struct` and `bit` C module built into firmware.
+The module requires `softuart`, `struct` and `bit` C module built into firmware.
+
 ### Require
 ```lua
 mcu680 = require("mcu680")
@@ -32,13 +33,13 @@ Initializes UART port.
 `nil`
 
 ## mcu680:read()
-Reads values from the module. Module send output every 3 seconds. Then the callback runs.
+Reads values from the module. Module send output every 3 seconds, the callback is executed once after first message received.
 
 #### Syntax
 `mcu680:read(callback)`
 
 #### Parameters
-- `callback` callback function
+- `callback` function that receives all results when all conversions finish
 
 #### Callback function parameters
 - `temperature` temperature in Celsius multiplied by 100
@@ -47,10 +48,12 @@ Reads values from the module. Module send output every 3 seconds. Then the callb
 - `iaq_accuracy` The accuracy status is equal to zero during the power-on stabilization times of the sensor and is equal to 3 when the sensor achieves best performance
 - `iaq` indoor air quality index
 - `gas_resistance` gas resistance in Ohms
-- `altitude` 
+- `altitude`
 
-Indoor air quality (IAQ) classification [IAQ](https://ae-bst.resource.bosch.com/media/_tech/media/datasheets/BST-BME680-DS001.pdf) page 9, Table 4
+Indoor air quality (IAQ) classification is described in [BME680 datasheet](https://ae-bst.resource.bosch.com/media/_tech/media/datasheets/BST-BME680-DS001.pdf) on page 9, Table 4
+
 | IAQ Index | Air Quality |
+|:---------:|:-----------:|
 | 0 – 50 | good |
 | 51 – 100 | average |
 | 101 – 150 | little bad |
@@ -63,8 +66,8 @@ Indoor air quality (IAQ) classification [IAQ](https://ae-bst.resource.bosch.com/
 
 #### Example
 ```lua
-local mcu680 = require("mcu680")
-local tx, rx = 1, 2
+mcu680 = require("mcu680")
+tx, rx = 1, 2
 mcu680:init(tx, rx)
 mcu680:read(function(temperature, humidity, pressure, iaq_accuracy, iaq, gas_resistance, altitude)
     print(string.format("Temperature: %g C", temperature/100))
