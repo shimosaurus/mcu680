@@ -6,7 +6,7 @@
 This Lua code for NodeMCU provides access to module GY-MCU680V1 with sensor [BME680](https://www.bosch-sensortec.com/bst/products/all_products/bme680) and MCU STM32 obtain temperature, humidity, atmospheric pressure, IAQ (indoor air quality) and resistance value. Data read is through serial port.
 
 !!! note
-The module requires `softuart`, `struct` and `bit` C module built into firmware.
+    The module requires `softuart`, `struct` and `bit` C module built into firmware.
 
 ### Require
 ```lua
